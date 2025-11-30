@@ -1,0 +1,171 @@
+@startuml WakeUp_State_Machine
+!theme superhero-outline
+title <b>WakeUp StateDiagram</b>
+
+skinparam state {
+    BackgroundColor<<start>> #90EE90
+    BackgroundColor<<process>> #87CEEB
+    BackgroundColor<<end>> #FFB6C6
+    BorderColor #000
+    FontColor #1a1a1a
+    FontSize 12
+    ArrowColor #333
+}
+
+skinparam note {
+    BackgroundColor #FFFACD
+    BorderColor #333
+    FontColor #000
+}
+
+
+state "State 0: Idle" as Idle <<start>> {
+  state "Waiting for Signal" as IdleWait
+  state "Checking StartWakeUp" as IdleCheck
+  IdleWait --> IdleCheck
+}
+
+state "State 10: Alarm Ringing" as AlarmRinging <<process>> {
+  state "Activate Alarm" as AlarmActivate
+  state "Set AlarmOn = TRUE" as AlarmSet
+  state "Wake Up Action" as AlarmWake
+  state "Set GotOutOfBed = TRUE" as BedSet
+  AlarmActivate --> AlarmSet
+  AlarmSet --> AlarmWake
+  AlarmWake --> BedSet
+}
+
+state "State 20: Brushing Teeth" as BrushingTeeth <<process>> {
+  state "Brush Teeth Activity" as BrushActivity
+  state "Set BrushedTeeth = TRUE" as BrushSet
+  state "Prepare for Breakfast" as BreakfastPrep
+  state "Set ReadyForBreakfast = TRUE" as BreakfastSet
+  BrushActivity --> BrushSet
+  BrushSet --> BreakfastPrep
+  BreakfastPrep --> BreakfastSet
+}
+
+state "State 30: Done" as Finished <<end>> {
+  state "Routine Complete" as DoneComplete
+  state "All Tasks Finished" as DoneVerify
+  DoneComplete --> DoneVerify
+}
+
+
+[*] --> Idle : Initialize System
+
+Idle --> AlarmRinging : **[CONDITION]** StartWakeUp == TRUE\n**[GUARD]** Permission granted
+
+AlarmRinging --> BrushingTeeth : **[TRIGGER]** Wake up signal sent\n**[ACTION]** GotOutOfBed ← TRUE
+
+BrushingTeeth --> Finished : **[TRIGGER]** Hygiene complete\n**[ACTION]** ReadyForBreakfast ← TRUE
+
+Finished --> [*] : **[EVENT]** Routine SUCCESS ✓
+
+
+note right of Idle
+
+    IDLE STATE (0)            
+    [INITIAL STATE]  
+              
+
+   Purpose: System waiting        
+   Entry Trigger: System init 
+
+   Activity:                      
+     1. Wait for signal           
+     2. Monitor input             
+     3. Check StartWakeUp flag
+
+   Variables Monitored:           
+     → StartWakeUp (input)  
+
+   Exit Condition:                
+     StartWakeUp == TRUE    
+
+   Next State: Alarm Ringing      
+  
+end note
+
+note right of AlarmRinging
+  
+     ALARM RINGING STATE (10)     
+    [PROCESSING STATE]            
+  
+   Purpose: Wake-up execution    
+   Entry Trigger: From Idle  
+
+   Actions (Sequential):        
+     1. Activate alarm system     
+     2. AlarmOn := TRUE           
+     3. Simulate waking up        
+     4. GotOutOfBed := TRUE 
+
+   Variables Modified:            
+     ✓ AlarmOn = TRUE             
+     ✓ GotOutOfBed = TRUE  
+
+   Duration: Automatic    
+
+   Next State: Brushing Teeth     
+  
+end note
+
+note right of BrushingTeeth
+  
+    BRUSHING TEETH STATE (20)     
+    [PROCESSING STATE]            
+
+   Purpose: Morning hygiene       
+   Entry Trigger: From Alarm 
+
+   Actions (Sequential):          
+     1. Perform teeth brushing    
+     2. BrushedTeeth := TRUE      
+     3. Prepare breakfast         
+     4. ReadyForBreakfast := TRUE 
+
+   Variables Modified:            
+     ✓ BrushedTeeth = TRUE        
+     ✓ ReadyForBreakfast = TRUE 
+
+   Duration: Automatic
+
+   Next State: Done               
+  
+end note
+
+note right of Finished
+  
+    DONE STATE (30)           
+    [FINAL STATE]                 
+
+   Purpose: Routine completion    
+   Entry Trigger: From Brushing 
+
+   Status: SUCCESS ✓   
+
+   Completed Tasks:               
+     ✓ Woke up                   
+     ✓ Got out of bed             
+     ✓ Brushed teeth              
+     ✓ Ready for breakfast  
+
+   Final State Variables:         
+     • AlarmOn = TRUE             
+     • GotOutOfBed = TRUE         
+     • BrushedTeeth = TRUE        
+     • ReadyForBreakfast = TRUE 
+
+   Exit Action: Exit routine      
+   Process Complete: YES          
+end note
+
+
+legend right
+  |<#90EE90> Start/Initial State |
+  |<#87CEEB> Processing State    |
+  |<#FFB6C6> End/Final State     |
+endlegend
+
+@enduml

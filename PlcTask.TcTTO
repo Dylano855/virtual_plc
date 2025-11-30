@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <Task Name="PlcTask" Id="{7f6ac938-6c5f-49d6-bafb-31ac28cbee6a}">
+    <!--CycleTime in micro seconds.-->
+    <CycleTime>50000</CycleTime>
+    <Priority>20</Priority>
+    <PouCall>
+      <Name>MAIN</Name>
+    </PouCall>
+    <PouCall>
+      <Name>PRG_BreakfastTask</Name>
+    </PouCall>
+    <PouCall>
+      <Name>PRG_WakeUpTask</Name>
+    </PouCall>
+    <TaskFBGuid>{ec8759ba-072f-439b-b1f4-d1ed0986089e}</TaskFBGuid>
+    <Fb_init>{b81227c2-6499-40e4-8fec-14be9841e8e7}</Fb_init>
+    <Fb_exit>{612bf61c-b90b-4b23-a807-3ab5a389b2c9}</Fb_exit>
+    <CycleUpdate>{4f96f493-af1a-4b7a-b580-e15bc9d5fa63}</CycleUpdate>
+    <PostCycleUpdate>{264a7af0-1e60-43a9-ad4a-14d7b52863ee}</PostCycleUpdate>
+  </Task>
+</TcPlcObject>

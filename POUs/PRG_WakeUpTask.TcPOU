@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="PRG_WakeUpTask" Id="{436a571f-058d-4e58-be8c-6d69868800e6}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM PRG_WakeUpTask
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[CASE GVL_MorningRoutine.State_WakeUp OF
+
+    0: // Idle
+        IF GVL_MorningRoutine.StartWakeUp THEN
+            GVL_MorningRoutine.AlarmOn := TRUE;
+            GVL_MorningRoutine.State_WakeUp := 10;
+        END_IF
+
+    10: // Alarm is ringing
+        // Simulate waking up
+        GVL_MorningRoutine.GotOutOfBed := TRUE;
+        GVL_MorningRoutine.State_WakeUp := 20;
+
+    20: // Brush teeth
+        GVL_MorningRoutine.BrushedTeeth := TRUE;
+        GVL_MorningRoutine.ReadyForBreakfast := TRUE;
+        GVL_MorningRoutine.State_WakeUp := 30;
+
+    30: // Done
+        // Task finished, no further action
+
+END_CASE]]></ST>
+    </Implementation>
+    <LineIds Name="PRG_WakeUpTask">
+      <LineId Id="6" Count="20" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

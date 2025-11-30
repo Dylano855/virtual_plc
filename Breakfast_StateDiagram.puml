@@ -1,0 +1,186 @@
+@startuml Breakfast_State_Machine
+!theme superhero-outline
+title <b>Breakfast StateDiagram</b>
+
+skinparam state {
+    BackgroundColor<<start>> #90EE90
+    BackgroundColor<<process>> #87CEEB
+    BackgroundColor<<end>> #FFB6C6
+    BorderColor #000
+    FontColor #1a1a1a
+    FontSize 12
+    ArrowColor #333
+}
+
+skinparam note {
+    BackgroundColor #FFFACD
+    BorderColor #333
+    FontColor #000
+}
+
+
+state "State 0: Idle" as Idle <<start>> {
+  state "Waiting for Signal" as IdleWait
+  state "Checking StartBreakfast" as IdleCheck
+  IdleWait --> IdleCheck
+}
+
+state "State 10: Wait for Task 1" as WaitTask <<process>> {
+  state "Check ReadyForBreakfast" as WaitCheck
+  state "Call IsReady Function" as WaitFunction
+  state "Verify Readiness" as WaitVerify
+  WaitCheck --> WaitFunction
+  WaitFunction --> WaitVerify
+}
+
+state "State 20: Making Breakfast" as MakingBreakfast <<process>> {
+  state "Start Cooking" as CookStart
+  state "Set MakingBreakfast = TRUE" as CookSet
+  state "Prepare Meal" as CookPrepare
+  CookStart --> CookSet
+  CookSet --> CookPrepare
+}
+
+state "State 30: Eating Breakfast" as EatingBreakfast <<process>> {
+  state "Set EatingBreakfast = TRUE" as EatSet
+  state "Consume Meal" as EatConsume
+  state "Set ReadyToLeave = TRUE" as LeaveSet
+  EatSet --> EatConsume
+  EatConsume --> LeaveSet
+}
+
+state "State 40: Done" as Finished <<end>> {
+  state "Breakfast Complete" as DoneComplete
+  state "All Tasks Finished" as DoneVerify
+  DoneComplete --> DoneVerify
+}
+
+
+[*] --> Idle : Initialize System
+
+Idle --> WaitTask : **[CONDITION]** StartBreakfast == TRUE\n**[GUARD]** Breakfast signal received
+
+WaitTask --> MakingBreakfast : **[CONDITION]** Ready == TRUE\n**[ACTION]** IsReady check passed
+
+MakingBreakfast --> EatingBreakfast : **[ACTION]** MakingBreakfast ← TRUE\n**[TRIGGER]** Cooking complete
+
+EatingBreakfast --> Finished : **[ACTION]** EatingBreakfast ← TRUE\nReadyToLeave ← TRUE
+
+Finished --> [*] : **[EVENT]** Breakfast SUCCESS ✓
+
+
+note right of Idle
+  IDLE STATE (0)
+  [INITIAL STATE]
+
+  Purpose: System waiting
+  Entry Trigger: System init
+
+  Activity:
+    1. Wait for signal
+    2. Monitor input
+    3. Check StartBreakfast flag
+
+  Variables Monitored:
+    → StartBreakfast (input)
+
+  Exit Condition:
+    StartBreakfast == TRUE
+
+  Next State: Wait for Task 1
+end note
+
+note right of WaitTask
+  WAIT FOR TASK 1 STATE (10)
+  [PROCESSING STATE]
+
+  Purpose: Wait for prior task
+  Entry Trigger: From Idle
+
+  Actions:
+    1. Check ReadyForBreakfast
+    2. Call IsReady function
+    3. Verify result = Ready
+
+  Variables Monitored:
+    → ReadyForBreakfast (input)
+    ← Ready (output)
+
+  Exit Condition:
+    Ready == TRUE
+
+  Next State: Making Breakfast
+end note
+
+note right of MakingBreakfast
+  MAKING BREAKFAST STATE (20)
+  [PROCESSING STATE]
+
+  Purpose: Prepare meal
+  Entry Trigger: From Wait Task
+
+  Actions (Sequential):
+    1. Start cooking activity
+    2. MakingBreakfast := TRUE
+    3. Prepare meal components
+
+  Variables Modified:
+    ✓ MakingBreakfast = TRUE
+
+  Duration: Automatic
+
+  Next State: Eating Breakfast
+end note
+
+note right of EatingBreakfast
+  EATING BREAKFAST STATE (30)
+  [PROCESSING STATE]
+
+  Purpose: Consume meal & ready
+  Entry Trigger: Cooking done
+
+  Actions (Sequential):
+    1. EatingBreakfast := TRUE
+    2. Consume prepared meal
+    3. ReadyToLeave := TRUE
+
+  Variables Modified:
+    ✓ EatingBreakfast = TRUE
+    ✓ ReadyToLeave = TRUE
+
+  Duration: Automatic
+
+  Next State: Done
+end note
+
+note right of Finished
+  DONE STATE (40)
+  [FINAL STATE]
+
+  Purpose: Routine completion
+  Entry Trigger: From Eating
+  Status: SUCCESS ✓
+
+  Completed Tasks:
+    ✓ Waited for ready signal
+    ✓ Made breakfast
+    ✓ Ate breakfast
+    ✓ Ready to leave
+
+  Final Variables:
+    • MakingBreakfast = TRUE
+    • EatingBreakfast = TRUE
+    • ReadyToLeave = TRUE
+
+  Exit Action: Exit routine
+  Process Complete: YES
+end note
+
+
+legend right
+  |<#90EE90> Start/Initial State |
+  |<#87CEEB> Processing State    |
+  |<#FFB6C6> End/Final State     |
+endlegend
+
+@enduml

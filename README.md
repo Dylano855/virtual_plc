@@ -26,8 +26,11 @@ These two tasks run independently but communicate through global variables.
 All diagrams are included as PlantUML files:
 
 WakeUp_StateDiagram.puml – state diagram for the wake-up task
+
 Breakfast_StateDiagram.puml – state diagram for the breakfast task
+
 Tasks_Sequence.puml – communication between tasks
+
 FunctionCall_Sequence.puml – how the function is called
 
 

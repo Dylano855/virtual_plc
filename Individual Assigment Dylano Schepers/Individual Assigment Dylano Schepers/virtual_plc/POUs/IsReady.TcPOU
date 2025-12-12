@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="IsReady" Id="{0aac700e-f7ce-44e5-beb3-86f2d77b0971}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION IsReady : BOOL
+VAR_INPUT
+	Condition : BOOL;
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IsReady := Condition;]]></ST>
+    </Implementation>
+    <LineIds Name="IsReady">
+      <LineId Id="7" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

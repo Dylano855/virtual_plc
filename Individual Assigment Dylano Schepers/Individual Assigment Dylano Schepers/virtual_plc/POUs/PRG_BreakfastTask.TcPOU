@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="PRG_BreakfastTask" Id="{e5b94054-dba6-4d30-8fd2-4e1bd4eee6f0}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM PRG_BreakfastTask
+VAR
+	Ready : BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[CASE GVL_MorningRoutine.State_Breakfast OF
+
+    0: // Idle
+        IF GVL_MorningRoutine.StartBreakfast THEN
+            GVL_MorningRoutine.State_Breakfast := 10;
+        END_IF
+
+    10: // Wait for Task 1 to finish
+        Ready := IsReady(GVL_MorningRoutine.ReadyForBreakfast);
+        IF Ready THEN
+            GVL_MorningRoutine.State_Breakfast := 20;
+        END_IF
+
+    20: // Make breakfast
+        GVL_MorningRoutine.MakingBreakfast := TRUE;
+        GVL_MorningRoutine.State_Breakfast := 30;
+
+    30: // Eat breakfast
+        GVL_MorningRoutine.EatingBreakfast := TRUE;
+        GVL_MorningRoutine.ReadyToLeave := TRUE;
+        GVL_MorningRoutine.State_Breakfast := 40;
+
+    40: // Done
+        // Task completed
+
+END_CASE]]></ST>
+    </Implementation>
+    <LineIds Name="PRG_BreakfastTask">
+      <LineId Id="28" Count="24" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

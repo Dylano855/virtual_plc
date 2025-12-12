@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <GVL Name="GVL_MorningRoutine" Id="{0e8d9f04-ef8d-4677-92c9-3fa5edc07c7b}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL
+	// Task 1 — Wake Up Routine
+    AlarmOn : BOOL := FALSE;
+    GotOutOfBed : BOOL := FALSE;
+    BrushedTeeth : BOOL := FALSE;
+    ReadyForBreakfast : BOOL := FALSE;
+    State_WakeUp : INT := 0;
+    StartWakeUp : BOOL := TRUE;
+
+    // Task 2 — Breakfast Routine
+    MakingBreakfast : BOOL := FALSE;
+    EatingBreakfast : BOOL := FALSE;
+    ReadyToLeave : BOOL := FALSE;
+    State_Breakfast : INT := 0;
+    StartBreakfast : BOOL := TRUE;
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>
